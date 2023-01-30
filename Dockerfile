@@ -13,8 +13,8 @@ ENV GODEBUG netdns=cgo
 # Pass a tag, branch or a commit using build-arg.  This allows a docker
 # image to be built from a specified Git state.  The default image
 # will use the Git tip of master by default.
-ARG checkout="master"
-ARG git_url="https://github.com/lightningnetwork/lnd"
+ARG checkout="lipa-node-v0.15.4"
+ARG git_url="https://github.com/getlipa/lnd-lspd"
 
 # Install dependencies and build the binaries.
 RUN apk add --no-cache --update alpine-sdk \
