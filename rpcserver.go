@@ -2086,20 +2086,22 @@ func (r *rpcServer) parseOpenChannelReq(in *lnrpc.OpenChannelRequest,
 
 	case lnrpc.CommitmentType_ANCHORS:
 		channelType = new(lnwire.ChannelType)
-		fv := lnwire.NewRawFeatureVector(
-			lnwire.StaticRemoteKeyRequired,
-			lnwire.AnchorsZeroFeeHtlcTxRequired,
-		)
-
 		if in.ZeroConf {
-			fv.Set(lnwire.ZeroConfRequired)
+			fv := lnwire.NewRawFeatureVector(
+				lnwire.StaticRemoteKeyRequired,
+				lnwire.ZeroConfRequired,
+			)
+			*channelType = lnwire.ChannelType(*fv)
+		} else {
+			fv := lnwire.NewRawFeatureVector(
+				lnwire.StaticRemoteKeyRequired,
+				lnwire.AnchorsZeroFeeHtlcTxRequired,
+			)
+			if in.ScidAlias {
+				fv.Set(lnwire.ScidAliasRequired)
+			}
+			*channelType = lnwire.ChannelType(*fv)
 		}
-
-		if in.ScidAlias {
-			fv.Set(lnwire.ScidAliasRequired)
-		}
-
-		*channelType = lnwire.ChannelType(*fv)
 
 	case lnrpc.CommitmentType_SCRIPT_ENFORCED_LEASE:
 		channelType = new(lnwire.ChannelType)
